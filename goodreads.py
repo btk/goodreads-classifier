@@ -54,6 +54,9 @@ def preprocess(filename):
 			# instead of stemming words, I will lemmatize them with wordnet article database
 			line = lemmatize_words(line);
 
+			# remove single letter words in the text like: j. f. kennedy => kennedy
+			line = ' '.join( [w for w in line.split() if len(w)>1] )
+
 			processed += [(documentClass, line)];
 
 		lineCounter+=1;
