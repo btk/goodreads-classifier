@@ -7,10 +7,9 @@ import re
 from sklearn.svm import SVC
 from nltk.classify.scikitlearn import SklearnClassifier
 
-#nltk.download('stopwords')
-#nltk.download('punkt')
-#nltk.download('wordnet')
-
+nltk.download('stopwords')
+nltk.download('punkt')
+nltk.download('wordnet')
 
 from nltk.corpus import stopwords
 from nltk.stem import PorterStemmer
@@ -133,14 +132,7 @@ def extract_features(megadoc):
 
 	feature_set = [({i:(i in word_tokenize(description.lower())) for i in vocabulary},tag) for description, tag in megadoc]
 
-	return feature_set;	# megadoc can be either training_megadoc for training phase or test_megadoc for testing phase.
-	####################################################################################################################
-	#																												   #
-	#		TO DO: Select features and create feature-based representations of labeled documents.                      #
-	#																												   #
-	####################################################################################################################
-
-
+	return feature_set;
 
 
 
