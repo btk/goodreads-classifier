@@ -9,6 +9,9 @@ from nltk.classify.scikitlearn import SklearnClassifier
 
 #nltk.download('stopwords')
 #nltk.download('punkt')
+#nltk.download('wordnet')
+
+
 from nltk.corpus import stopwords
 from nltk.stem import PorterStemmer
 
@@ -99,7 +102,7 @@ def lemmatize_words(text):
 
 
 def create_training_megadoc():
-	training_documents = ["philosophy_dev.txt","sports_dev.txt","mystery_dev.txt","religion_dev.txt","science_dev.txt","romance_dev.txt","horror_dev.txt","science-fiction_dev.txt"]
+	training_documents = ["philosophy_train.txt","sports_train.txt","mystery_train.txt","religion_train.txt","science_train.txt","romance_train.txt","horror_train.txt","science-fiction_train.txt"]
 	training_megadoc = []
 
 	for filename in training_documents:
@@ -157,8 +160,6 @@ def test(classifier, test_set):
 
 	for book in test_set:
 		classifier_guess = classifier.classify(book[0]);
-		print(classifier_guess);
-		print(book[1]);
 		if classifier_guess == book[1]:
 			count_right += 1;
 		else:
@@ -190,10 +191,10 @@ if __name__ == "__main__":
 	# You may add or delete global variables.
 
 	training_megadoc = create_training_megadoc();
-	training_set = extract_features(training_megadoc[0:500])
+	training_set = extract_features(training_megadoc)
 
 	test_megadoc = create_test_megadoc();
-	test_set = extract_features(test_megadoc[0:500])
+	test_set = extract_features(test_megadoc)
 
 	classifier_type = "naivebayes" # naivebayes, svc
 
@@ -212,15 +213,3 @@ if __name__ == "__main__":
 		accuracy = test(classifier, test_set);
 		print("SVC Classifier Accuracy: ")
 		print(accuracy);
-
-
-
-
-
-
-
-
-
-
-
-	#print(preprocess("philosophy_train.txt"));
