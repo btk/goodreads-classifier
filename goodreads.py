@@ -6,6 +6,7 @@ import re
 
 from sklearn.svm import SVC
 from nltk.classify.scikitlearn import SklearnClassifier
+from nltk.metrics.scores import (precision, recall)
 
 nltk.download('stopwords')
 nltk.download('punkt')
@@ -120,17 +121,19 @@ def create_test_megadoc():
 	return test_megadoc
 
 
-
-
-
 def extract_features(megadoc):
-
-
+	# bag of words 1-gram
 	from nltk.tokenize import word_tokenize
 	from itertools import chain
-	vocabulary = set(chain(*[word_tokenize(i[0].lower()) for i in megadoc]))
 
-	feature_set = [({i:(i in word_tokenize(description.lower())) for i in vocabulary},tag) for description, tag in megadoc]
+	print("Megadoc length: ", len(megadoc));
+	vocabulary = set(chain(*[i[0].split(" ") for i in megadoc]))
+	feature_set = [({i:(i in description.split(" ")) for i in vocabulary},tag) for description, tag in megadoc]
+
+	# use word_tokenize
+
+	# vocabulary = set(chain(*[word_tokenize(i[0].lower()) for i in megadoc]))
+	# feature_set = [({i:(i in word_tokenize(description.lower())) for i in vocabulary},tag) for description, tag in megadoc]
 
 	return feature_set;
 
@@ -182,26 +185,37 @@ def load_classifier(filename):	#filename should end with .pickle and type(filena
 if __name__ == "__main__":
 	# You may add or delete global variables.
 
-	training_megadoc = create_training_megadoc();
-	training_set = extract_features(training_megadoc)
+	load_from_pickle = 0
+
+	if load_from_pickle == 0:
+		training_megadoc = create_training_megadoc();
+		training_set = extract_features(training_megadoc)
 
 	test_megadoc = create_test_megadoc();
 	test_set = extract_features(test_megadoc)
 
 	classifier_type = "naivebayes" # naivebayes, svc
 
-	if classifier_type == "naivebayes":
+	if load_from_pickle == 1:
+		print("Loading from pickle...")
+		classifier = load_classifier(classifier_type+".pickle")
+	else:
 		classifier = train(nltk.NaiveBayesClassifier, training_set);
 		save_classifier(classifier, classifier_type+".pickle")
 
-		accuracy = test(classifier, test_set);
-		print("NaiveBayes Classifier Accuracy: ")
-		print(accuracy);
+	accuracy = test(classifier, test_set);
+	print("NaiveBayes Classifier Accuracy: ")
+	print(accuracy);
 
-	elif classifier_type == "svc":
+	classifier_type = "svc" # naivebayes, svc
+
+	if load_from_pickle == 1:
+		print("Loading from pickle...")
+		classifier = load_classifier(classifier_type+".pickle")
+	else:
 		classifier = train(SklearnClassifier(SVC()), training_set);
 		save_classifier(classifier, classifier_type+".pickle")
 
-		accuracy = test(classifier, test_set);
-		print("SVC Classifier Accuracy: ")
-		print(accuracy);
+	accuracy = test(classifier, test_set);
+	print("SVC Classifier Accuracy: ")
+	print(accuracy);
